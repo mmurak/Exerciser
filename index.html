@@ -40,13 +40,15 @@
   </head>
   <body>
     <p style="font-size: 50%;text-align:right;">Powered by Papa Parse CSV parsing engine.</p>
-    <select onclick="this.value=null;" onchange="setSelection(this);">
+    <div class="text-field">
+    <select onclick="this.value=null;" onchange="setSelection(this);" style="font-size: 120%;">
     <option value="">テストを選択</option>
     <option value="rariruro4">四択問題</option>
     <option value="LRtest">二択問題</option>
     </select>
     <input type="button" id="nextButton" class="control-button" value="  Next  " onclick="nextQ()" disabled>
-    <div id="statusArea"></div>
+    </div>
+    <div id="statusArea" class="text-field"></div>
     <div id="contentsArea"></div>
     <div align="center"><font size="7"><label id="verdict"></label></font></div>
     <audio id="audioEngine"></audio>
@@ -162,7 +164,7 @@
         let m = str.match(regex);
         if (m != null) {
             G.audioEngine.src = G.audioResourceDirectory + G.filenameRoot + "/" + m[1];
-            result = str.replace(regex, "<input type=\"button\" class=\"control-button\"value=\"Play\" onclick=\"audioPlay();\">");
+            result = str.replace(regex, "<input type=\"button\" class=\"control-button\"value=\"  Play  \" onclick=\"audioPlay();\">");
         } else {
             result = str;
         }
