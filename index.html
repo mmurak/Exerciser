@@ -1,0 +1,240 @@
+<html>
+  <head>
+    <title>Exerciser</title>
+    <link rel="shortcut icon" href="kiwi-bird.png">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+    <style>
+        .control-button{
+            font-size: 120%;
+            box-sizing: border-box;
+            border: 1px solid #68779a;
+            background: #ccccff;
+            cursor: pointer;
+        }
+        .text-field{
+            font-size: 150%;
+        }
+        .control-button:active {
+            box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+            transform: translateY(2px);
+        }
+        .answer-button{
+            width: 100%;
+            min-width: 200px;
+            max-width: 1600px;
+            padding: 30px 10px 30px 10px;
+            font-size: 200%;
+            box-sizing: border-box;
+            border: 1px solid #68779a;
+            background: #cbe8fa;
+            cursor: pointer;
+        }
+        .answer-button:active {
+            box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+            transform: translateY(2px);
+        }
+        .image-class {
+            max-width: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <p style="font-size: 50%;text-align:right;">Powered by Papa Parse CSV parsing engine.</p>
+    <select onclick="this.value=null;" onchange="setSelection(this);">
+    <option value="">テストを選択</option>
+    <option value="rariruro4">四択問題</option>
+    <option value="LRtest">二択問題</option>
+    </select>
+    <input type="button" id="nextButton" class="control-button" value="  Next  " onclick="nextQ()" disabled>
+    <div id="statusArea"></div>
+    <div id="contentsArea"></div>
+    <div align="center"><font size="7"><label id="verdict"></label></font></div>
+    <script src="./papaparse.min.js"></script>
+    <script>
+    class GlobalManager {
+        constructor() {
+            this.shuffledArray = [];
+            this.pointer = 0;
+            this.nextButton = document.getElementById("nextButton");
+            this.csvFile = document.getElementById("csvFile");
+            this.statusArea = document.getElementById("statusArea");
+            this.parentNode = document.getElementById("contentsArea");
+            this.verdict = document.getElementById("verdict");
+            this.rightAnswerIdx = 0;
+            this.seqNo = 0;
+            this.bingo = 0;
+            this.missed = 0;
+            this.passed = 0;
+            this.buttonPushed = false;
+            this.numOfQ  = 0;
+            this.audioResourceDirectory = './audio/';
+            this.imageResourceDirectory = './image/';
+            this.filenameRoot = "";
+            this.reviewData = [];
+        }
+    }
+    let G = new GlobalManager();
+
+    // Clear Contents Area
+    function clearContents() {
+        let child = G.parentNode.lastElementChild;
+        while(child) {
+            G.parentNode.removeChild(child);
+            child = G.parentNode.lastElementChild;
+        }
+    }
+
+    function insertBRtag(str) {
+        return str.replace(/\n/g, "<br/>");
+    }
+
+    function nextQ() {
+        if (G.buttonPushed == false) {
+            G.passed++;
+            G.reviewData.push([document.getElementById("id" + G.rightAnswerIdx).value, ""]);
+        }
+        G.pointer++;
+        if (G.pointer >= G.shuffledArray.length) {
+            clearContents();
+            G.seqNo++;
+            let revData = "結果：\n";
+            if ((G.missed + G.passed) == 0) {
+                revData += "　全問正解！";
+            } else {
+                for (const elem of G.reviewData) {
+                    if (elem[1] != "") {
+                        revData += "　解： " + elem[0] + "を誤って " + elem[1] + " と選択しました。\n";
+                    } else {
+                        revData += "　解： " + elem[0] + "をパスしました。\n";
+                    }
+                }
+            }
+            G.nextButton.disabled = true;
+            alert(revData);
+        } else {
+            createPanel();
+        }
+        G.verdict.innerHTML = "";
+        G.verdict.style = "background-color: #ffffff";
+    }
+
+    function buttonPush(number) {
+        G.buttonPushed = true;
+        let buttons = document.getElementsByClassName("answer-button");
+        for (const elem of buttons) {
+            elem.disabled = true;
+        }
+        if (number == G.rightAnswerIdx) {
+            G.bingo++;
+            G.verdict.innerHTML = "CORRECT!";
+            G.verdict.style = "background-color: #66ccff";
+            document.getElementById("id" + G.rightAnswerIdx).style = "color: #1E8449";
+        } else {
+            G.missed++;
+            G.verdict.innerHTML = "WRONG!";
+            G.verdict.style = "background-color: #ff99cc";
+            let answer = document.getElementById("id" + G.rightAnswerIdx).value;
+            let selected = document.getElementById("id" + number).value;
+            G.reviewData.push([answer, selected])
+            document.getElementById("id" + G.rightAnswerIdx).style = "color: red";
+        }
+        displayScore();
+        return;
+    }
+
+    function ppScore() {
+        return "スコア： " + G.numOfQ + "問中  " + G.bingo + "問正解  " + G.missed + "問不正解  " + G.passed + "問未回答";
+    }
+
+    function displayScore() {
+        G.statusArea.innerHTML = ppScore();
+    }
+
+    function processMMtag(str) {
+        let result = str.replace(/\(\((.+?)\)\)/, "<audio id=\"sound\" src=\"" + G.audioResourceDirectory + G.filenameRoot + "/$1" + "\"></audio><input type=\"button\" class=\"control-button\"value=\"Play\" onclick=\"document.getElementById('sound').play();\">");
+        result = result.replace(/\[\[(.+?)\]\]/, "<img src=\"" + G.imageResourceDirectory + G.filenameRoot + "/$1" + "\" class=\"image-class\">");
+        return result;
+    }
+
+    function createPanel() {
+        clearContents();
+        G.verdict.innerHTML = "";
+        displayScore();
+        let panelData = G.shuffledArray[G.pointer];
+        let question = document.createElement("p");
+        question.className = "text-field";
+        G.seqNo++;
+        question.innerHTML = "Q" + G.seqNo + ": " + insertBRtag(processMMtag(panelData[0]));
+        G.parentNode.appendChild(question);
+        let selections = [];
+        for (let i = 1; i < panelData.length; i++) {
+            selections.push(panelData[i]);
+        }
+        // Shuffler start
+        let idx = selections.length;
+        let ridx;
+        G.rightAnswerIdx = 0;
+        while (idx > 0) {
+            ridx = Math.floor(Math.random() * idx);
+            idx--;
+            if (ridx == G.rightAnswerIdx) {
+                G.rightAnswerIdx = idx;
+            }
+            [selections[idx], selections[ridx]] = [selections[ridx], selections[idx]];
+        }
+        // Shuffler end
+        for (let i = 0; i < selections.length; i++) {
+            G.buttonPushed = false;
+            let button = document.createElement("input");
+            button.type = "button";
+            button.id = "id" + i;
+            button.className = "answer-button";
+            button.value = selections[i];
+            button.addEventListener("click", function() { buttonPush(i) });
+            G.parentNode.appendChild(button);
+        }
+    }
+
+    function mainProcess(csvArray) {
+        G.nextButton.disabled = false;
+        // multispace canceller
+        csvArray = csvArray.filter(function(elem) { return elem.length > 2; });
+        // shuffler
+        let idx = csvArray.length;
+        G.numOfQ = idx;
+        let ridx;
+        while (idx > 0) {
+            ridx = Math.floor(Math.random() * idx);
+            idx--;
+            [csvArray[idx], csvArray[ridx]] = [csvArray[ridx], csvArray[idx]];
+        }
+        G.shuffledArray = csvArray;
+        G.pointer = 0;
+        G.seqNo = 0;
+        G.bingo = 0;
+        G.missed = 0;
+        G.passed = 0;
+        G.reviewData = [];
+        createPanel();
+    }
+
+    function setSelection(obj) {
+        G.filenameRoot = obj.value;
+        if (G.filenameRoot == "")  return;
+        let request = new XMLHttpRequest();
+        request.open('GET', "./" + G.filenameRoot + ".csv");
+        request.setRequestHeader("Pragma", "no-cache");
+        request.setRequestHeader("Cache-Control", "no-cache");
+        request.setRequestHeader("If-Modified-Since", "Sat, 01 Jan 2000 00:00:00 GMT");
+        request.responseType = 'text';
+        request.send();
+        request.onload = function() {
+            let newData = request.response;
+            let csvData = Papa.parse(newData).data;
+            mainProcess(csvData);
+        }
+    }
+
+    </script>
+  </body>
+</html>
