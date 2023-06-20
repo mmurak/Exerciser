@@ -19,6 +19,7 @@ function nextQ() {
         G.reviewData.push([document.getElementById("id" + G.rightAnswerIdx).value, ""]);
     }
     G.pointer++;
+    displayScore();
     if (G.pointer >= G.shuffledArray.length) {
         clearContents();
         G.seqNo++;
