@@ -90,7 +90,12 @@ function displayScore() {
 }
 
 function audioPlay() {
-    G.audioEngine.play();
+    if (G.audioEngine.paused) {
+        G.audioEngine.play();
+    } else {
+        G.audioEngine.pause();
+        G.audioEngine.currentTime = 0;
+    }
 }
 
 function processMMtag(str) {
@@ -99,7 +104,7 @@ function processMMtag(str) {
     let m = str.match(regex);
     if (m != null) {
         G.audioEngine.src = G.audioResourceDirectory + G.filenameRoot + "/" + m[1];
-        result = str.replace(regex, "<input type=\"button\" class=\"control-button\"value=\"  Play  \" onclick=\"audioPlay();\">");
+        result = str.replace(regex, "<input type=\"button\" class=\"control-button\"value=\"  Play/Stop  \" onclick=\"audioPlay();\">");
     } else {
         result = str;
     }
