@@ -1,27 +1,111 @@
 <html>
   <head>
     <title>Exerciser</title>
-    <link rel="shortcut icon" href="kiwi-bird.png">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="kiwi-bird.png">
+    <style>
+body{
+    background-color: #f0f8ff;
+}
+header{
+  position: sticky;
+  top: 0;
+  background-color: #f0f8ff;
+  z-index: 100;
+}
+#selector{
+    width: 100%;
+}
+#contentsHead{
+  padding: 5px 5px 5px 5px;
+}
+.control-button{
+    -webkit-appearance: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 120%;
+    box-sizing: border-box;
+    border: 1px solid #68779a;
+    background: #ccccff;
+    cursor: pointer;
+}
+.text-field{
+    font-size: 150%;
+}
+.control-button:active {
+    box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+    transform: translateY(2px);
+}
+.answer-button{
+    width: 100%;
+    min-width: 200px;
+    max-width: 160px;
+    padding: 30px 10px 30px 10px;
+    font-size: 300%;
+    box-sizing: border-box;
+    border: 1px solid #68779a;
+    background: #cbe8fa;
+    cursor: pointer;
+}
+.answer-button:active {
+    box-shadow: inset 0 0 2px rgba(128, 128, 128, 0.1);
+    transform: translateY(2px);
+}
+.image-class {
+    max-width: 100%;
+}
+@media screen and (max-width: 600px) {
+    #selector{
+        font-size: 50%;
+    }
+    .control-button{
+      -webkit-appearance: none;
+      font-size: 100%;
+      box-sizing: border-box;
+      border: 1px solid #68779a;
+      background: #ccccff;
+      cursor: pointer;
+  }
+    .answer-button{
+        -webkit-appearance: none;
+        width: 100%;
+        min-width: 200px;
+        max-width: 1600px;
+        padding: 5px 10px 5px 10px;
+        font-size: 120%;
+        box-sizing: border-box;
+        border: 1px solid #68779a;
+        background: #cbe8fa;
+        cursor: pointer;
+    }
+}
+.text-field{
+    font-size: 100%;
+}
+    </style>
   </head>
   <body>
-    <p style="font-size: 50%;text-align:right;">Powered by Papa Parse CSV parsing engine.</p>
-    <div class="text-field">
-    <select id="selector" onclick="this.value=null;" onchange="setSelection(this);" style="font-size: 120%;">
-    <option value="">テストを選択</option>
-    <option value="Muramatsu0003">村松剛先生のr/l & ɔ/oʊラップ（全10問）</option>
-    <option value="Muramatsu0002">村松剛先生のfather/farther/further（全8問）</option>
-    <option value="Muramatsu0001">村松剛先生のboat/bought（全6問）</option>
-    <option value="rariruro4">[l][ɹ][r][ɾ]四択問題（全16問）</option>
-    <option value="LRtest01">L/R二択問題-I（全40問）</option>
-    <option value="LRtest02">L/R二択問題-II（全40問）</option>
-    <option value="LRtest03">L/R二択問題-III（全40問）</option>
-    <option value="LRtest04">L/R二択問題-IV（全16問）</option>
-    </select>
-    <input type="button" id="nextButton" class="control-button" value="  Next  " onclick="nextQ()" disabled>
-    </div>
-    <div id="statusArea" class="text-field"></div>
+    <header>
+      <p style="font-size: 50%;text-align:right;">Powered by Papa Parse CSV parsing engine.</p>
+      <div class="text-field">
+        <select id="selector" onclick="this.value=null;" onchange="setSelection(this);" style="font-size: 120%;">
+        <option value="">テストを選択</option>
+        <option value="VowelTest">音バカ村松先生の母音聞き取り（全44問）</option>
+        <option value="Muramatsu0003">音バカ村松先生のr/l & ɔ/oʊラップ（全10問）</option>
+        <option value="Muramatsu0002">音バカ村松先生のfather/farther/further（全8問）</option>
+        <option value="Muramatsu0001">音バカ村松先生のboat/bought（全6問）</option>
+        <option value="rariruro4">[l][ɹ][r][ɾ]四択問題（全16問）</option>
+        <option value="LRtest01">L/R二択問題-I（全40問）</option>
+        <option value="LRtest02">L/R二択問題-II（全40問）</option>
+        <option value="LRtest03">L/R二択問題-III（全40問）</option>
+        <option value="LRtest04">L/R二択問題-IV（全16問）</option>
+        </select>
+        <input type="button" id="nextButton" class="control-button" value="  Next  " onclick="nextQ()" disabled>
+      </div>
+      <div id="statusArea" class="text-field"></div>
+      <div id="contentsHead"></div>
+    </header>
     <div id="contentsArea"></div>
     <div align="center"><font size="7"><label id="verdict"></label></font></div>
     <audio id="audioEngine"></audio>

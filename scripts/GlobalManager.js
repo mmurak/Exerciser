@@ -5,6 +5,7 @@ class GlobalManager {
         this.nextButton = document.getElementById("nextButton");
         this.csvFile = document.getElementById("csvFile");
         this.statusArea = document.getElementById("statusArea");
+        this.contentsHead = document.getElementById("contentsHead");
         this.parentNode = document.getElementById("contentsArea");
         this.verdict = document.getElementById("verdict");
         this.audioEngine = document.getElementById("audioEngine");
@@ -19,5 +20,6 @@ class GlobalManager {
         this.imageResourceDirectory = './image/';
         this.filenameRoot = "text/";
         this.reviewData = [];
+        this.audio = new Audio();
     }
 }

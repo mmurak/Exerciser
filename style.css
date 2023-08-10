@@ -1,8 +1,23 @@
-body {
+body{
     background-color: #f0f8ff;
 }
-
+header{
+  position: sticky;
+  top: 0;
+  background-color: #f0f8ff;
+  z-index: 100;
+}
+#selector{
+    width: 100%;
+}
+#contentsHead{
+  padding: 5px 5px 5px 5px;
+}
 .control-button{
+    -webkit-appearance: none;
+    color: red;
+    border-radius: 0;
+    padding: 0;
     font-size: 120%;
     box-sizing: border-box;
     border: 1px solid #68779a;
@@ -19,7 +34,7 @@ body {
 .answer-button{
     width: 100%;
     min-width: 200px;
-    max-width: 1600px;
+    max-width: 160px;
     padding: 30px 10px 30px 10px;
     font-size: 300%;
     box-sizing: border-box;
@@ -33,4 +48,30 @@ body {
 }
 .image-class {
     max-width: 100%;
+}
+@media screen and (max-width: 600px) {
+    #selector{
+        font-size: 50%;
+    }
+.control-button{
+    -webkit-appearance: none;
+    color: red;
+    font-size: 120%;
+    box-sizing: border-box;
+    border: 1px solid #68779a;
+    background: #ccccff;
+    cursor: pointer;
+}
+    .answer-button{
+        -webkit-appearance: none;
+        width: 100%;
+        min-width: 200px;
+        max-width: 1600px;
+        padding: 10px 10px 10px 10px;
+        font-size: 150%;
+        box-sizing: border-box;
+        border: 1px solid #68779a;
+        background: #cbe8fa;
+        cursor: pointer;
+    }
 }
